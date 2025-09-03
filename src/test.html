@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="ar">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Dev Console</title>
+    <style>
+      :root {
+        --bg: #0b1020;
+        --panel: #0f1724;
+        --muted: #9aa4b2;
+        --accent: #60a5fa;
+        --warn: #f59e0b;
+        --err: #f87171;
+        --font: "Segoe UI", Roboto, "Noto Sans", Arial, sans-serif;
+      }
+      body {
+        margin: 0;
+        font-family: var(--font);
+        background: linear-gradient(180deg, #071029 0%, #081226 100%);
+        color: #e6eef8;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .console-wrap {
+        width: 92%;
+        max-width: 1000px;
+        height: 70vh;
+        background: var(--panel);
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(2, 6, 23, 0.7);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      .console-head {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      }
+      .title {
+        font-weight: 600;
+        font-size: 15px;
+        color: #dff1ff;
+      }
+      .controls {
+        margin-left: auto;
+        display: flex;
+        gap: 6px;
+        align-items: center;
+      }
+      .btn {
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.04);
+        color: var(--muted);
+        padding: 6px 8px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 13px;
+      }
+      .btn:hover {
+        border-color: rgba(255, 255, 255, 0.08);
+        color: #fff;
+      }
+      .filter {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+      }
+      .console-body {
+        flex: 1;
+        overflow: auto;
+        padding: 12px;
+        font-family: monospace;
+        font-size: 13px;
+        line-height: 1.5;
+      }
+      .entry {
+        padding: 8px;
+        border-radius: 8px;
+        margin-bottom: 8px;
+        background: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0.01),
+          rgba(255, 255, 255, 0.005)
+        );
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+      }
+      .meta {
+        min-width: 190px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .msg {
+        white-space: pre-wrap;
+        word-break: break-word;
+        flex: 1;
+        color: #e6eef8;
+      }
+      .level-log {
+      }
+      .level-info {
+        border-left: 4px solid var(--accent);
+      }
+      .level-warn {
+        border-left: 4px solid var(--warn);
+      }
+      .level-error {
+        border-left: 4px solid var(--err);
+      }
+      .small-stack {
+        color: var(--muted);
+        font-size: 11px;
+        margin-top: 6px;
+      }
+      .copy {
+        cursor: pointer;
+        color: var(--muted);
+        font-size: 12px;
+        margin-left: 8px;
+      }
+      .search {
+        padding: 6px 8px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.03);
+        background: transparent;
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="console-wrap" id="devConsole">
+      <div class="console-head">
+        <div class="title">Dev Console</div>
+        <div class="filter" role="group" aria-label="filters">
+          <label><input type="checkbox" id="f-log" checked /> log</label>
+          <label><input type="checkbox" id="f-info" checked /> info</label>
+          <label><input type="checkbox" id="f-warn" checked /> warn</label>
+          <label><input type="checkbox" id="f-error" checked /> error</label>
+        </div>
+        <div class="controls">
+          <input id="searchInput" class="search" placeholder="ابحث..." />
+          <button class="btn" id="clearBtn">مسح</button>
+          <button class="btn" id="exportBtn">تصدير</button>
+        </div>
+      </div>
+
+      <div class="console-body" id="consoleBody"></div>
+    </div>
+
+    <script>
+      const arr = [];
+
+      function addLog(data) {
+        const logs = [];
+        logs.push({ data }); // خزّنا المرجع نفسه
+        console.log("logs:", logs); // يطبع فاضي
+        return logs;
+      }
+
+      const logs = addLog(arr); // مررنا مصفوفة فاضية
+
+      // بعد التخزين، عدلنا المصفوفة الأصلية
+      arr.push(1);
+      arr.push(2);
+    </script>
+    <!-- <script>
+/*
+  Simple in-page dev console that:
+  - intercepts console.log/info/warn/error
+  - prints timestamp and stack (file:line:col) where log was called
+  - supports filtering by level, searching, clearing, and export
+*/
+
+// helper: format time
+function formatTime(date = new Date()){
+  const pad = (n, z=2)=>String(n).padStart(z,'0');
+  return `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}.${String(date.getMilliseconds()).padStart(3,'0')}`;
+}
+
+// helper: try to extract caller file:line:col from Error.stack
+function getCallerInfo(stackOffset = 3){
+  const err = new Error();
+  if(!err.stack) return null;
+  const lines = err.stack.split('\\n').map(l=>l.trim()).filter(Boolean);
+  // lines[0] is "Error"
+  // choose a likely line for caller (skip internal wrapper frames)
+  const idx = Math.min(stackOffset, Math.max(1, lines.length-1));
+  // Search for first line that includes "(" or "at "
+  let candidate = null;
+  for(let i=2;i<lines.length;i++){
+    const l = lines[i];
+    // skip our console wrapper frames by checking for this file's reference (not robust across bundlers)
+    if(l.includes('getCallerInfo') || l.includes('at Object.<anonymous>')) continue;
+    candidate = l;
+    break;
+  }
+  if(!candidate) candidate = lines[idx] || lines[lines.length-1];
+  // candidate examples:
+  // Chrome: "at Object.<anonymous> (http://localhost:5500/app.js:10:5)"
+  // Firefox: "http://localhost:5500/app.js:10:5"
+  const match = candidate.match(/(https?:\\/\\/[^:\\)\\s]+:\\d+:\\d+|\\/[^:\\s]+:\\d+:\\d+|[\\w\\.-]+:\\d+:\\d+)/);
+  if(match) return match[0];
+  // fallback: return whole candidate trimmed
+  return candidate.replace(/^at\s+/, '');
+}
+
+// create DOM entry
+const consoleBody = document.getElementById('consoleBody');
+const entries = []; // keep memory for export/search
+
+function addEntry(level, args, caller){
+  const time = formatTime();
+  const ent = { time, level, args: args.map(a=>serialize(a)), caller, rawArgs: args, id: entries.length };
+  entries.push(ent);
+  renderEntry(ent);
+  // auto-scroll
+  consoleBody.scrollTop = consoleBody.scrollHeight;
+}
+
+function serialize(v){
+  try{
+    if(typeof v === 'string') return v;
+    if(v === null) return 'null';
+    if(v === undefined) return 'undefined';
+    if(typeof v === 'object') return JSON.stringify(v, getCircularReplacer(), 2);
+    return String(v);
+  }catch(e){ return String(v); }
+}
+
+function getCircularReplacer(){
+  const seen = new WeakSet();
+  return function(key, value){
+    if(typeof value === "object" && value !== null){
+      if(seen.has(value)) return "[Circular]";
+      seen.add(value);
+    }
+    return value;
+  };
+}
+
+// render single entry to DOM (applies current filters)
+function renderEntry(ent){
+  const el = document.createElement('div');
+  el.className = 'entry level-' + ent.level;
+  el.dataset.level = ent.level;
+  el.dataset.search = (ent.time + ' ' + ent.level + ' ' + ent.args.join(' ') + ' ' + (ent.caller||'')).toLowerCase();
+
+  const meta = document.createElement('div');
+  meta.className = 'meta';
+  meta.innerHTML = `<div><strong>${ent.time}</strong></div>
+                    <div style="margin-top:6px">${ent.level.toUpperCase()} · ${ent.caller || 'unknown'}</div>`;
+
+  const msg = document.createElement('div');
+  msg.className = 'msg';
+  msg.innerHTML = ent.args.map(a=>escapeHtml(a)).join(' ');
+
+  const stackSmall = document.createElement('div');
+  stackSmall.className = 'small-stack';
+  stackSmall.textContent = ent.caller || '';
+
+  const copy = document.createElement('span');
+  copy.className = 'copy';
+  copy.textContent = 'نسخ';
+  copy.title = 'نسخ المحتوى';
+  copy.onclick = ()=> {
+    navigator.clipboard?.writeText(ent.rawArgs.map(a=>typeof a === 'string' ? a : JSON.stringify(a)).join(' '));
+  };
+
+  el.appendChild(meta);
+  el.appendChild(msg);
+  el.appendChild(copy);
+  el.appendChild(stackSmall);
+  consoleBody.appendChild(el);
+}
+
+// escape HTML
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, function(m){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"})[m]; });
+}
+
+// override native console
+(function(){
+  const native = {
+    log: console.log.bind(console),
+    info: console.info.bind(console),
+    warn: console.warn.bind(console),
+    error: console.error.bind(console)
+  };
+
+  function makeWrapper(level, nativeFn){
+    return function(...args){
+      // call native so browser console still shows it
+      try{ nativeFn(...args); } catch(e){ /* ignore */ }
+      const caller = getCallerInfo(4);
+      addEntry(level, args, caller);
+    };
+  }
+
+  console.log = makeWrapper('log', native.log);
+  console.info = makeWrapper('info', native.info);
+  console.warn = makeWrapper('warn', native.warn);
+  console.error = makeWrapper('error', native.error);
+
+  // expose method to log programmatically to our console without touching native console:
+  window.devConsole = {
+    raw: addEntry,
+    entries: entries,
+    clear(){ entries.length=0; consoleBody.innerHTML=''; }
+  };
+})();
+
+// UI: filters, search, clear, export
+document.getElementById('clearBtn').addEventListener('click', ()=> {
+  window.devConsole.clear();
+});
+
+document.getElementById('exportBtn').addEventListener('click', ()=> {
+  const blob = new Blob([JSON.stringify(entries, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `dev-console-${new Date().toISOString()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+const checkboxes = {
+  log: document.getElementById('f-log'),
+  info: document.getElementById('f-info'),
+  warn: document.getElementById('f-warn'),
+  error: document.getElementById('f-error')
+};
+
+Object.values(checkboxes).forEach(cb=>cb.addEventListener('change', applyFilters));
+document.getElementById('searchInput').addEventListener('input', applyFilters);
+
+function applyFilters(){
+  const show = {
+    log: checkboxes.log.checked,
+    info: checkboxes.info.checked,
+    warn: checkboxes.warn.checked,
+    error: checkboxes.error.checked
+  };
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  const children = Array.from(consoleBody.children);
+  children.forEach(ch => {
+    const lvl = ch.dataset.level;
+    const matchesFilter = !!show[lvl];
+    const matchesSearch = q ? ch.dataset.search.includes(q) : true;
+    ch.style.display = (matchesFilter && matchesSearch) ? '' : 'none';
+  });
+}
+
+// simple demo logs (remove in production/demo)
+console.log('Ready — dev console started');
+console.info('مثال: معلومات');
+console.warn('تحذير: قيمة قد تكون خاطئة');
+console.error('خطأ تجريبي', {code:500, url:'/api/test'});
+
+</script>
+ -->
+  </body>
+</html>

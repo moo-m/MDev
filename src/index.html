@@ -1,0 +1,1321 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>لعبة X O مع التعلم بالتعزيز</title>
+    <style>
+      /* Reset and Base Styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        color: #333;
+        line-height: 1.6;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      /* Header Styles */
+      header {
+        text-align: center;
+        margin-bottom: 30px;
+        color: white;
+      }
+
+      header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      header p {
+        font-size: 1.2rem;
+        opacity: 0.9;
+      }
+
+      /* Game Status */
+      .game-status {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 15px 25px;
+        border-radius: 15px;
+        margin-bottom: 20px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+      }
+
+      .game-status > div {
+        flex: 1;
+        text-align: center;
+      }
+
+      .game-status span {
+        font-weight: bold;
+        font-size: 1.1rem;
+      }
+
+      #current-player-text {
+        color: #2563eb;
+      }
+
+      #best-move-text {
+        color: #dc2626;
+      }
+
+      #game-mode-text {
+        color: #059669;
+      }
+
+      /* Game Board */
+      .game-board-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 30px;
+      }
+
+      .game-board {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-gap: 8px;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 20px;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(10px);
+      }
+
+      .cell {
+        width: 100px;
+        height: 100px;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .cell:hover {
+        background: rgba(255, 255, 255, 1);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+      }
+
+      .cell:active {
+        transform: translateY(-1px);
+      }
+
+      .cell.x {
+        color: #dc2626;
+        animation: popIn 0.3s ease;
+      }
+
+      .cell.o {
+        color: #2563eb;
+        animation: popIn 0.3s ease;
+      }
+
+      .cell.winning {
+        background: linear-gradient(45deg, #fbbf24, #f59e0b);
+        animation: pulse 1s infinite;
+      }
+
+      @keyframes popIn {
+        0% {
+          transform: scale(0);
+        }
+        50% {
+          transform: scale(1.2);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+      }
+
+      /* Control Panel */
+      .control-panel {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      .training-controls,
+      .game-controls {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+      }
+
+      .training-controls h3,
+      .game-controls h3 {
+        margin-bottom: 20px;
+        color: #374151;
+        font-size: 1.3rem;
+      }
+
+      /* Speed Controls */
+      .speed-controls {
+        margin-bottom: 20px;
+      }
+
+      .speed-controls label {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: bold;
+        color: #4b5563;
+      }
+
+      .radio-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .radio-group input[type="radio"] {
+        margin-left: 8px;
+      }
+
+      .radio-group label {
+        font-weight: normal;
+        cursor: pointer;
+        transition: color 0.2s ease;
+      }
+
+      .radio-group label:hover {
+        color: #2563eb;
+      }
+
+      /* Buttons */
+      .btn {
+        padding: 12px 20px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin: 5px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .btn:active {
+        transform: translateY(0);
+      }
+
+      .btn-primary {
+        background: linear-gradient(45deg, #2563eb, #1d4ed8);
+        color: white;
+      }
+
+      .btn-secondary {
+        background: linear-gradient(45deg, #6b7280, #4b5563);
+        color: white;
+      }
+
+      .btn-danger {
+        background: linear-gradient(45deg, #dc2626, #b91c1c);
+        color: white;
+      }
+
+      .btn-success {
+        background: linear-gradient(45deg, #059669, #047857);
+        color: white;
+      }
+
+      .btn-info {
+        background: linear-gradient(45deg, #0891b2, #0e7490);
+        color: white;
+      }
+
+      .btn-warning {
+        background: linear-gradient(45deg, #d97706, #b45309);
+        color: white;
+      }
+
+      .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .training-buttons,
+      .game-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      /* Statistics Panel */
+      .stats-panel {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 25px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+      }
+
+      .stats-panel h3 {
+        margin-bottom: 20px;
+        color: #374151;
+        font-size: 1.3rem;
+        text-align: center;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+      }
+
+      .stat-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        background: rgba(255, 255, 255, 0.7);
+        border-radius: 10px;
+        border-right: 4px solid #2563eb;
+      }
+
+      .stat-label {
+        font-weight: bold;
+        color: #4b5563;
+      }
+
+      .stat-value {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #2563eb;
+      }
+
+      /* Q-Table Panel */
+      .qtable-panel {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 25px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+      }
+
+      .qtable-panel h3 {
+        margin-bottom: 20px;
+        color: #374151;
+        font-size: 1.3rem;
+        text-align: center;
+      }
+
+      .qtable-controls {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+
+      .qtable-container {
+        max-height: 400px;
+        overflow-y: auto;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+      }
+
+      .qtable {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+      }
+
+      .qtable th,
+      .qtable td {
+        padding: 8px 12px;
+        text-align: center;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      .qtable th {
+        background: #f3f4f6;
+        font-weight: bold;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+
+      .qtable tr:hover {
+        background: #f9fafb;
+      }
+
+      .qtable .best-action {
+        background: #dcfce7;
+        color: #166534;
+        font-weight: bold;
+      }
+
+      /* Footer */
+      footer {
+        text-align: center;
+        color: rgba(255, 255, 255, 0.8);
+        margin-top: 40px;
+        padding: 20px;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .container {
+          padding: 10px;
+        }
+
+        header h1 {
+          font-size: 2rem;
+        }
+
+        .cell {
+          width: 80px;
+          height: 80px;
+          font-size: 2.5rem;
+        }
+
+        .control-panel {
+          grid-template-columns: 1fr;
+        }
+
+        .game-status {
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .training-buttons,
+        .game-buttons {
+          justify-content: center;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .cell {
+          width: 70px;
+          height: 70px;
+          font-size: 2rem;
+        }
+
+        .btn {
+          padding: 10px 15px;
+          font-size: 0.9rem;
+        }
+      }
+
+      /* Loading Animation */
+      .loading {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: #fff;
+        animation: spin 1s ease-in-out infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Notification Styles */
+      .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        border-radius: 10px;
+        color: white;
+        font-weight: bold;
+        z-index: 1000;
+        animation: slideIn 0.3s ease;
+      }
+
+      .notification.success {
+        background: linear-gradient(45deg, #059669, #047857);
+      }
+
+      .notification.error {
+        background: linear-gradient(45deg, #dc2626, #b91c1c);
+      }
+
+      .notification.info {
+        background: linear-gradient(45deg, #2563eb, #1d4ed8);
+      }
+
+      @keyframes slideIn {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>لعبة X O مع التعلم بالتعزيز (Q-Learning)</h1>
+        <p>الروبوت يتعلم من كل جولة ويصبح أقوى!</p>
+      </header>
+
+      <main>
+        <!-- Game Status and Best Move Display -->
+        <div class="game-status">
+          <div class="current-player">
+            <span id="current-player-text">دور اللاعب: X</span>
+          </div>
+          <div class="best-move">
+            <span id="best-move-text">أفضل حركة: -</span>
+          </div>
+          <div class="game-mode">
+            <span id="game-mode-text">وضع: تدريب</span>
+          </div>
+        </div>
+
+        <!-- Game Board -->
+        <div class="game-board-container">
+          <div class="game-board" id="game-board">
+            <div class="cell" data-index="0"></div>
+            <div class="cell" data-index="1"></div>
+            <div class="cell" data-index="2"></div>
+            <div class="cell" data-index="3"></div>
+            <div class="cell" data-index="4"></div>
+            <div class="cell" data-index="5"></div>
+            <div class="cell" data-index="6"></div>
+            <div class="cell" data-index="7"></div>
+            <div class="cell" data-index="8"></div>
+          </div>
+        </div>
+
+        <!-- Control Panel -->
+        <div class="control-panel">
+          <div class="training-controls">
+            <h3>التحكم بالتدريب</h3>
+            <div class="speed-controls">
+              <label>سرعة التدريب:</label>
+              <div class="radio-group">
+                <input
+                  type="radio"
+                  id="speed-fast"
+                  name="training-speed"
+                  value="fast"
+                  checked
+                />
+                <label for="speed-fast">سريع جداً (50ms)</label>
+
+                <input
+                  type="radio"
+                  id="speed-medium"
+                  name="training-speed"
+                  value="medium"
+                />
+                <label for="speed-medium">متوسط (200ms)</label>
+
+                <input
+                  type="radio"
+                  id="speed-slow"
+                  name="training-speed"
+                  value="slow"
+                />
+                <label for="speed-slow">بطيء (500ms)</label>
+              </div>
+            </div>
+            <div class="training-buttons">
+              <button id="start-training" class="btn btn-primary">
+                بدء التدريب
+              </button>
+              <button id="stop-training" class="btn btn-secondary">
+                إيقاف التدريب
+              </button>
+              <button id="reset-training" class="btn btn-danger">
+                إعادة تعيين
+              </button>
+            </div>
+          </div>
+
+          <div class="game-controls">
+            <h3>التحكم باللعبة</h3>
+            <div class="game-buttons">
+              <button id="play-human" class="btn btn-success">
+                العب ضد الروبوت
+              </button>
+              <button id="new-game" class="btn btn-info">لعبة جديدة</button>
+              <button id="show-data" class="btn btn-warning">
+                شوف بيانات الروبوت
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Statistics Panel -->
+        <div class="stats-panel">
+          <h3>إحصائيات التدريب</h3>
+          <div class="stats-grid">
+            <div class="stat-item">
+              <span class="stat-label">عدد الجولات:</span>
+              <span class="stat-value" id="games-count">0</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">انتصارات X:</span>
+              <span class="stat-value" id="x-wins">0</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">انتصارات O:</span>
+              <span class="stat-value" id="o-wins">0</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">التعادل:</span>
+              <span class="stat-value" id="draws">0</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">معدل التعلم (ε):</span>
+              <span class="stat-value" id="epsilon-value">1.0</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">حجم Q-Table:</span>
+              <span class="stat-value" id="qtable-size">0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q-Table Display -->
+        <div class="qtable-panel" id="qtable-panel" style="display: none">
+          <h3>بيانات الروبوت (Q-Table)</h3>
+          <div class="qtable-controls">
+            <button id="hide-qtable" class="btn btn-secondary">
+              إخفاء البيانات
+            </button>
+            <button id="export-qtable" class="btn btn-info">
+              تصدير البيانات
+            </button>
+          </div>
+          <div class="qtable-container" id="qtable-container">
+            <!-- Q-Table will be dynamically generated here -->
+          </div>
+        </div>
+      </main>
+
+      <footer>
+        <p>تم تطوير هذه اللعبة باستخدام خوارزمية Q-Learning للتعلم بالتعزيز</p>
+      </footer>
+    </div>
+
+    <script>
+      // Tic-Tac-Toe with Advanced Q-Learning Implementation
+      class TicTacToeRL {
+        constructor() {
+          // Game state
+          this.board = Array(9).fill("");
+          this.currentPlayer = "X";
+          this.gameMode = "training"; // 'training' or 'human'
+          this.gameActive = true;
+
+          // Training state
+          this.isTraining = false;
+          this.trainingSpeed = 1; // milliseconds
+          this.trainingInterval = null;
+
+          // Game history for Q-Learning
+          this.gameHistory = [];
+          this.currentGameMoves = [];
+
+          // Statistics
+          this.stats = {
+            gamesCount: 0,
+            xWins: 0,
+            oWins: 0,
+            draws: 0,
+          };
+
+          // Q-Learning parameters
+          this.qTable = new Map();
+          this.alpha = 0.1; // Learning rate
+          this.gamma = 0.9; // Discount factor
+          this.epsilon = 1.0; // Exploration rate
+          this.epsilonDecay = 0.995;
+          this.epsilonMin = 0.01;
+
+          // DOM elements
+          this.initializeDOM();
+          this.attachEventListeners();
+          this.updateUI();
+        }
+
+        initializeDOM() {
+          this.cells = document.querySelectorAll(".cell");
+          this.currentPlayerText = document.getElementById(
+            "current-player-text",
+          );
+          this.bestMoveText = document.getElementById("best-move-text");
+          this.gameModeText = document.getElementById("game-mode-text");
+
+          // Statistics elements
+          this.gamesCountEl = document.getElementById("games-count");
+          this.xWinsEl = document.getElementById("x-wins");
+          this.oWinsEl = document.getElementById("o-wins");
+          this.drawsEl = document.getElementById("draws");
+          this.epsilonValueEl = document.getElementById("epsilon-value");
+          this.qtableSizeEl = document.getElementById("qtable-size");
+
+          // Control elements
+          this.startTrainingBtn = document.getElementById("start-training");
+          this.stopTrainingBtn = document.getElementById("stop-training");
+          this.resetTrainingBtn = document.getElementById("reset-training");
+          this.playHumanBtn = document.getElementById("play-human");
+          this.newGameBtn = document.getElementById("new-game");
+          this.showDataBtn = document.getElementById("show-data");
+          this.hideQtableBtn = document.getElementById("hide-qtable");
+          this.exportQtableBtn = document.getElementById("export-qtable");
+
+          // Speed controls
+          this.speedControls = document.querySelectorAll(
+            'input[name="training-speed"]',
+          );
+
+          // Q-Table panel
+          this.qtablePanel = document.getElementById("qtable-panel");
+          this.qtableContainer = document.getElementById("qtable-container");
+        }
+
+        attachEventListeners() {
+          // Cell clicks for human player
+          this.cells.forEach((cell, index) => {
+            cell.addEventListener("click", () => this.handleCellClick(index));
+          });
+
+          // Control buttons
+          this.startTrainingBtn.addEventListener("click", () =>
+            this.startTraining(),
+          );
+          this.stopTrainingBtn.addEventListener("click", () =>
+            this.stopTraining(),
+          );
+          this.resetTrainingBtn.addEventListener("click", () =>
+            this.resetTraining(),
+          );
+          this.playHumanBtn.addEventListener("click", () =>
+            this.startHumanGame(),
+          );
+          this.newGameBtn.addEventListener("click", () => this.newGame());
+          this.showDataBtn.addEventListener("click", () => this.showQTable());
+          this.hideQtableBtn.addEventListener("click", () => this.hideQTable());
+          this.exportQtableBtn.addEventListener("click", () =>
+            this.exportQTable(),
+          );
+
+          // Speed controls
+          this.speedControls.forEach((control) => {
+            control.addEventListener("change", () =>
+              this.updateTrainingSpeed(),
+            );
+          });
+        }
+
+        // Game Logic Methods
+        handleCellClick(index) {
+          if (
+            this.gameMode !== "human" ||
+            !this.gameActive ||
+            this.board[index] !== ""
+          ) {
+            return;
+          }
+
+          this.makeMove(index, this.currentPlayer);
+
+          if (this.gameActive) {
+            this.switchPlayer();
+            // AI move after human move
+            setTimeout(() => {
+              if (this.gameActive && this.currentPlayer === "O") {
+                const aiMove = this.getAIMove();
+                if (aiMove !== -1) {
+                  this.makeMove(aiMove, this.currentPlayer);
+                  this.switchPlayer();
+                }
+              }
+            }, 500);
+          }
+        }
+
+        makeMove(index, player) {
+          if (this.board[index] !== "" || !this.gameActive) {
+            return false;
+          }
+
+          // Record move for Q-Learning
+          const stateBefore = this.getStateKey();
+
+          this.board[index] = player;
+          this.updateCellDisplay(index, player);
+
+          // Store move in game history
+          this.currentGameMoves.push({
+            player: player,
+            state: stateBefore,
+            action: index,
+            nextState: this.getStateKey(),
+          });
+
+          const winner = this.checkWinner();
+          if (winner) {
+            this.endGame(winner);
+          } else if (this.isBoardFull()) {
+            this.endGame("draw");
+          }
+
+          return true;
+        }
+
+        switchPlayer() {
+          this.currentPlayer = this.currentPlayer === "X" ? "O" : "X";
+          this.updateUI();
+        }
+
+        checkWinner() {
+          const winPatterns = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8], // Rows
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8], // Columns
+            [0, 4, 8],
+            [2, 4, 6], // Diagonals
+          ];
+
+          for (const pattern of winPatterns) {
+            const [a, b, c] = pattern;
+            if (
+              this.board[a] &&
+              this.board[a] === this.board[b] &&
+              this.board[a] === this.board[c]
+            ) {
+              this.highlightWinningCells(pattern);
+              return this.board[a];
+            }
+          }
+
+          return null;
+        }
+
+        isBoardFull() {
+          return this.board.every((cell) => cell !== "");
+        }
+
+        endGame(result) {
+          this.gameActive = false;
+
+          if (result === "X") {
+            this.stats.xWins++;
+          } else if (result === "O") {
+            this.stats.oWins++;
+          } else {
+            this.stats.draws++;
+          }
+
+          this.stats.gamesCount++;
+          this.updateStatistics();
+
+          // Update Q-Table if in training mode
+          if (this.gameMode === "training") {
+            this.updateQTableAfterGame(result);
+          }
+
+          // Clear current game moves for next game
+          this.currentGameMoves = [];
+        }
+
+        // Enhanced Q-Learning Methods
+        getStateKey(board = this.board) {
+          return board.join("");
+        }
+
+        getValidMoves(board = this.board) {
+          return board
+            .map((cell, index) => (cell === "" ? index : -1))
+            .filter((index) => index !== -1);
+        }
+
+        getQValue(state, action) {
+          const key = `${state}_${action}`;
+          return this.qTable.get(key) || 0;
+        }
+
+        setQValue(state, action, value) {
+          const key = `${state}_${action}`;
+          this.qTable.set(key, value);
+        }
+
+        getBestMove(board = this.board, player = this.currentPlayer) {
+          const state = this.getStateKey(board);
+          const validMoves = this.getValidMoves(board);
+
+          if (validMoves.length === 0) return -1;
+
+          // Check for immediate win
+          for (const move of validMoves) {
+            const testBoard = [...board];
+            testBoard[move] = player;
+            if (this.checkWinnerForBoard(testBoard) === player) {
+              return move;
+            }
+          }
+
+          // Check for blocking opponent's win
+          const opponent = player === "X" ? "O" : "X";
+          for (const move of validMoves) {
+            const testBoard = [...board];
+            testBoard[move] = opponent;
+            if (this.checkWinnerForBoard(testBoard) === opponent) {
+              return move;
+            }
+          }
+
+          // Use Q-values for other moves
+          let bestMove = validMoves[0];
+          let bestValue = this.getQValue(state, bestMove);
+
+          for (const move of validMoves) {
+            const qValue = this.getQValue(state, move);
+            if (qValue > bestValue) {
+              bestValue = qValue;
+              bestMove = move;
+            }
+          }
+
+          return bestMove;
+        }
+
+        checkWinnerForBoard(board) {
+          const winPatterns = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8], // Rows
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8], // Columns
+            [0, 4, 8],
+            [2, 4, 6], // Diagonals
+          ];
+
+          for (const pattern of winPatterns) {
+            const [a, b, c] = pattern;
+            if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+              return board[a];
+            }
+          }
+
+          return null;
+        }
+
+        getAIMove(board = this.board, player = this.currentPlayer) {
+          const validMoves = this.getValidMoves(board);
+
+          if (validMoves.length === 0) return -1;
+
+          // Epsilon-greedy strategy
+          if (Math.random() < this.epsilon && this.gameMode === "training") {
+            // Exploration: random move
+            return validMoves[Math.floor(Math.random() * validMoves.length)];
+          } else {
+            // Exploitation: best known move
+            return this.getBestMove(board, player);
+          }
+        }
+
+        updateQTableAfterGame(result) {
+          const reward = this.getReward(result);
+
+          // Backward propagation through the game moves
+          for (let i = this.currentGameMoves.length - 1; i >= 0; i--) {
+            const move = this.currentGameMoves[i];
+            const currentQ = this.getQValue(move.state, move.action);
+
+            let nextMaxQ = 0;
+            if (i < this.currentGameMoves.length - 1) {
+              // Get max Q-value for next state
+              const nextState = move.nextState;
+              const nextValidMoves = this.getValidMovesFromState(nextState);
+
+              if (nextValidMoves.length > 0) {
+                nextMaxQ = Math.max(
+                  ...nextValidMoves.map((action) =>
+                    this.getQValue(nextState, action),
+                  ),
+                );
+              }
+            }
+
+            // Q-Learning update formula
+            const playerReward = this.getPlayerReward(result, move.player);
+            const newQ =
+              currentQ +
+              this.alpha * (playerReward + this.gamma * nextMaxQ - currentQ);
+            this.setQValue(move.state, move.action, newQ);
+          }
+
+          // Decay epsilon
+          if (this.epsilon > this.epsilonMin) {
+            this.epsilon *= this.epsilonDecay;
+          }
+        }
+
+        getValidMovesFromState(stateString) {
+          const board = stateString.split("");
+          return board
+            .map((cell, index) => (cell === "" ? index : -1))
+            .filter((index) => index !== -1);
+        }
+
+        getReward(result) {
+          if (result === "X") return 1;
+          if (result === "O") return -1;
+          return 0; // Draw
+        }
+
+        getPlayerReward(result, player) {
+          if (result === player) return 1;
+          if (result === "draw") return 0;
+          return -1;
+        }
+
+        // Training Methods
+        startTraining() {
+          this.gameMode = "training";
+          this.isTraining = true;
+          this.updateTrainingSpeed();
+
+          this.startTrainingBtn.disabled = true;
+          this.stopTrainingBtn.disabled = false;
+
+          this.runTrainingLoop();
+        }
+
+        stopTraining() {
+          this.isTraining = false;
+          if (this.trainingInterval) {
+            clearTimeout(this.trainingInterval);
+          }
+
+          this.startTrainingBtn.disabled = false;
+          this.stopTrainingBtn.disabled = true;
+        }
+
+        runTrainingLoop() {
+          if (!this.isTraining) return;
+
+          if (!this.gameActive) {
+            this.newGame();
+          }
+
+          // Make AI move
+          const aiMove = this.getAIMove();
+          if (aiMove !== -1 && this.gameActive) {
+            this.makeMove(aiMove, this.currentPlayer);
+
+            // Show best move suggestion
+            this.showBestMove();
+
+            if (this.gameActive) {
+              this.switchPlayer();
+            }
+          }
+
+          // Continue training loop
+          this.trainingInterval = setTimeout(() => {
+            this.runTrainingLoop();
+          }, this.trainingSpeed);
+        }
+
+        updateTrainingSpeed() {
+          const selectedSpeed = document.querySelector(
+            'input[name="training-speed"]:checked',
+          ).value;
+          switch (selectedSpeed) {
+            case "fast":
+              this.trainingSpeed = 50;
+              break;
+            case "medium":
+              this.trainingSpeed = 200;
+              break;
+            case "slow":
+              this.trainingSpeed = 500;
+              break;
+          }
+        }
+
+        resetTraining() {
+          this.stopTraining();
+          this.qTable.clear();
+          this.epsilon = 1.0;
+          this.stats = {
+            gamesCount: 0,
+            xWins: 0,
+            oWins: 0,
+            draws: 0,
+          };
+          this.currentGameMoves = [];
+          this.newGame();
+          this.updateStatistics();
+          this.showNotification("تم إعادة تعيين التدريب بنجاح", "success");
+        }
+
+        // Game Control Methods
+        startHumanGame() {
+          this.stopTraining();
+          this.gameMode = "human";
+          this.newGame();
+          this.showNotification("يمكنك الآن اللعب ضد الروبوت!", "info");
+        }
+
+        newGame() {
+          this.board = Array(9).fill("");
+          this.currentPlayer = "X";
+          this.gameActive = true;
+          this.currentGameMoves = [];
+
+          this.cells.forEach((cell) => {
+            cell.textContent = "";
+            cell.className = "cell";
+          });
+
+          this.updateUI();
+        }
+
+        // UI Update Methods
+        updateUI() {
+          this.currentPlayerText.textContent = `دور اللاعب: ${this.currentPlayer}`;
+          this.gameModeText.textContent = `وضع: ${this.gameMode === "training" ? "تدريب" : "لعب ضد الإنسان"}`;
+
+          if (
+            this.gameMode === "training" ||
+            (this.gameMode === "human" && this.currentPlayer === "O")
+          ) {
+            this.showBestMove();
+          } else {
+            this.bestMoveText.textContent = "أفضل حركة: -";
+          }
+        }
+
+        showBestMove() {
+          const bestMove = this.getBestMove();
+          if (bestMove !== -1) {
+            this.bestMoveText.textContent = `أفضل حركة: خانة ${bestMove + 1}`;
+          } else {
+            this.bestMoveText.textContent = "أفضل حركة: -";
+          }
+        }
+
+        updateCellDisplay(index, player) {
+          const cell = this.cells[index];
+          cell.textContent = player;
+          cell.classList.add(player.toLowerCase());
+        }
+
+        highlightWinningCells(pattern) {
+          pattern.forEach((index) => {
+            this.cells[index].classList.add("winning");
+          });
+        }
+
+        updateStatistics() {
+          this.gamesCountEl.textContent = this.stats.gamesCount;
+          this.xWinsEl.textContent = this.stats.xWins;
+          this.oWinsEl.textContent = this.stats.oWins;
+          this.drawsEl.textContent = this.stats.draws;
+          this.epsilonValueEl.textContent = this.epsilon.toFixed(3);
+          this.qtableSizeEl.textContent = this.qTable.size;
+        }
+
+        // Q-Table Display Methods
+        showQTable() {
+          this.qtablePanel.style.display = "block";
+          this.generateQTableHTML();
+        }
+
+        hideQTable() {
+          this.qtablePanel.style.display = "none";
+        }
+
+        generateQTableHTML() {
+          if (this.qTable.size === 0) {
+            this.qtableContainer.innerHTML =
+              "<p>لا توجد بيانات للعرض. ابدأ التدريب أولاً.</p>";
+            return;
+          }
+
+          // Group Q-values by state
+          const stateActions = new Map();
+
+          for (const [key, value] of this.qTable.entries()) {
+            const [state, action] = key.split("_");
+            if (!stateActions.has(state)) {
+              stateActions.set(state, {});
+            }
+            stateActions.get(state)[action] = value;
+          }
+
+          // Sort states by Q-value sum (most learned states first)
+          const sortedStates = Array.from(stateActions.entries()).sort(
+            (a, b) => {
+              const sumA = Object.values(a[1]).reduce(
+                (sum, val) => sum + Math.abs(val),
+                0,
+              );
+              const sumB = Object.values(b[1]).reduce(
+                (sum, val) => sum + Math.abs(val),
+                0,
+              );
+              return sumB - sumA;
+            },
+          );
+
+          // Generate HTML table
+          let html = '<table class="qtable"><thead><tr><th>حالة اللوحة</th>';
+          for (let i = 0; i < 9; i++) {
+            html += `<th>خانة ${i + 1}</th>`;
+          }
+          html += "</tr></thead><tbody>";
+
+          // Show only first 20 states to avoid overwhelming the display
+          const displayCount = Math.min(20, sortedStates.length);
+          for (let i = 0; i < displayCount; i++) {
+            const [state, actions] = sortedStates[i];
+
+            html += "<tr>";
+            html += `<td>${this.formatBoardState(state)}</td>`;
+
+            // Find best action for this state
+            let bestAction = -1;
+            let bestValue = -Infinity;
+            for (const [action, value] of Object.entries(actions)) {
+              if (value > bestValue) {
+                bestValue = value;
+                bestAction = action;
+              }
+            }
+
+            for (let j = 0; j < 9; j++) {
+              const value = actions[j] || 0;
+              const isBest = j.toString() === bestAction && bestValue > 0;
+              const cellClass = isBest ? "best-action" : "";
+              html += `<td class="${cellClass}">${value.toFixed(3)}</td>`;
+            }
+
+            html += "</tr>";
+          }
+
+          html += "</tbody></table>";
+
+          if (sortedStates.length > 20) {
+            html += `<p>عرض ${displayCount} من أصل ${sortedStates.length} حالة. استخدم زر التصدير لرؤية جميع البيانات.</p>`;
+          }
+
+          this.qtableContainer.innerHTML = html;
+        }
+
+        formatBoardState(state) {
+          let formatted = "";
+          for (let i = 0; i < 9; i++) {
+            if (i % 3 === 0 && i > 0) formatted += "<br>";
+            formatted += state[i] || "·";
+          }
+          return formatted;
+        }
+
+        exportQTable() {
+          const data = {
+            qTable: Object.fromEntries(this.qTable),
+            stats: this.stats,
+            epsilon: this.epsilon,
+            parameters: {
+              alpha: this.alpha,
+              gamma: this.gamma,
+              epsilonDecay: this.epsilonDecay,
+              epsilonMin: this.epsilonMin,
+            },
+            timestamp: new Date().toISOString(),
+          };
+
+          const blob = new Blob([JSON.stringify(data, null, 2)], {
+            type: "application/json",
+          });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `tic-tac-toe-qtable-${Date.now()}.json`;
+          a.click();
+          URL.revokeObjectURL(url);
+
+          this.showNotification("تم تصدير البيانات بنجاح", "success");
+        }
+
+        // Utility Methods
+        showNotification(message, type = "info") {
+          const notification = document.createElement("div");
+          notification.className = `notification ${type}`;
+          notification.textContent = message;
+          document.body.appendChild(notification);
+
+          setTimeout(() => {
+            notification.remove();
+          }, 3000);
+        }
+      }
+
+      // Initialize the game when the page loads
+      document.addEventListener("DOMContentLoaded", () => {
+        window.game = new TicTacToeRL();
+      });
+    </script>
+  </body>
+</html>

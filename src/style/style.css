@@ -1,0 +1,430 @@
+@import url(https://cdn.jsdelivr.net/npm/firacode@6.2.0/distr/fira_code.css);
+html {
+  /* background-image: url("https://images.pexels.com/photos/1755683/pexels-photo-1755683.jpeg"); */
+  background-origin: border-box;
+  background-size: cover;
+  background-repeat: no-repeat;
+  box-sizing: border-box;
+  font-weight: bolder;
+}
+body {
+  /* 1️⃣ إعادة الضبط الأساسية */
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* يحسب البادينج والحدود داخل حجم العنصر */
+  min-height: 100vh; /* يجعل الصفحة على الأقل بطول الشاشة */
+
+  /* 2️⃣ الخلفية */
+  background-color: #f8f9fa; /* لون خلفية أساسي */
+  background-image: url("https://images.pexels.com/photos/1755683/pexels-photo-1755683.jpeg");
+  background-size: cover; /* يجعل الصورة تغطي الصفحة */
+  background-position: center; /* يتمركز الخلفية */
+  background-attachment: fixed; /* يجعل الخلفية ثابتة عند التمرير */
+
+  /* 3️⃣ النصوص */
+  font-family: "Segoe UI", Arial, sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  color: #222;
+  line-height: 1.6;
+  text-align: left;
+  letter-spacing: 0.5px; /* تباعد الأحرف */
+  word-spacing: 2px; /* تباعد الكلمات */
+  text-rendering: optimizeLegibility;
+
+  /* 4️⃣ اللغة والاتجاه */
+  direction: ltr; /* أو rtl للعربية */
+  unicode-bidi: embed; /* دعم النصوص ثنائية الاتجاه */
+
+  /* 5️⃣ التفاعل */
+  cursor: default; /* شكل المؤشر */
+  user-select: none; /* منع تحديد النصوص */
+  scroll-behavior: smooth; /* تمرير سلس */
+
+  /* 6️⃣ تأثيرات إضافية */
+  transition:
+    background 0.3s,
+    color 0.3s; /* سلاسة عند تغيير اللون */
+  animation: fadeIn 0.6s ease; /* أنيميشن عند التحميل */
+}
+
+/* حركة دخول الصفحة */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* window */
+/* /window/screen/main.js */
+[id^="dev-window-screen"] {
+  font-family: "Fira Code", monospace;
+  user-select: none;
+  width: 0;
+  height: 0;
+  min-width: 150px;
+  min-height: 150px;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  border: 1.5px solid silver;
+  backdrop-filter: blur(2px);
+  background-color: #80d2ff2d;
+  /* #d2f8ff26 */
+  animation: appear 0.4s linear;
+  overflow: hidden;
+  transition: top 0.1s;
+  cursor: move;
+}
+#dev-window-screen-console {
+  --dev-width: 350px;
+  --dev-height: 250px;
+  --dev-top: calc(50% - 125px);
+  --dev-left: calc(50% - 175px);
+  width: var(--dev-width);
+  height: var(--dev-height);
+  top: var(--dev-top);
+  left: var(--dev-left);
+}
+#dev-window-screen-console-separated {
+  --dev-width: 350px;
+  --dev-height: 250px;
+  --dev-top: calc(50% - 125px);
+  --dev-left: calc(50% - 175px);
+  width: var(--dev-width);
+  height: var(--dev-height);
+  top: var(--dev-top);
+  left: var(--dev-left);
+  animation: appearS 0.4s linear;
+}
+
+/*/remove*/
+@keyframes appearS {
+  0% {
+    width: 0;
+    height: 0;
+    top: var(--dev-top);
+    left: var(--dev-left);
+    min-width: 0;
+    min-height: 0;
+    opacity: 0;
+  }
+  100% {
+    width: var(--dev-width);
+    height: var(--dev-height);
+    top: var(--dev-top);
+    left: var(--dev-left);
+    opacity: 1;
+  }
+}
+
+/* /dock/apps/console.js */
+@keyframes appear {
+  0% {
+    width: 0;
+    height: 0;
+    top: 100%;
+    left: 50%;
+    min-width: 0;
+    min-height: 0;
+    opacity: 0;
+  }
+  100% {
+    width: var(--dev-width);
+    height: var(--dev-height);
+    top: var(--dev-top);
+    left: var(--dev-left);
+    opacity: 1;
+  }
+}
+
+#dev-window-screen-console.dev-window-screen-console-hidden {
+  animation: hidden 0.4s linear forwards;
+}
+@keyframes hidden {
+  0% {
+    width: var(--dev-width);
+    height: var(--dev-height);
+    top: var(--dev-top);
+    left: var(--dev-left);
+    opacity: 1;
+  }
+  100% {
+    width: 0;
+    height: 0;
+    top: 99%;
+    left: 50%;
+    min-width: 0;
+    min-height: 0;
+    opacity: 0;
+  }
+}
+
+[id^="dev-window-screen"]:hover {
+  z-index: 2;
+}
+
+#dev-window-title {
+  display: inline-block;
+  width: 100px;
+  position: absolute;
+  top: 0;
+  left: calc(50% - 50px);
+  color: silver;
+  font-size: 1em;
+}
+.dev-window-close-btn {
+  position: absolute;
+  top: -4px;
+  right: 1px;
+  font-size: 16px;
+  color: silver;
+}
+.dev-window-close-btn:hover {
+  scale: 1.4;
+}
+.dev-window-move-btn {
+  position: absolute;
+  top: -4px;
+  right: 16px;
+  font-size: 16px;
+  color: silver;
+}
+.dev-window-move-btn:hover {
+  scale: 1.4;
+}
+[id^="dev-window-screen"].dev-window-close {
+  transform-origin: center;
+  animation: closeWin 0.2s linear;
+}
+@keyframes closeWin {
+  to {
+    opacity: 0.4;
+    scale: 0.7;
+    backdrop-filter: blur(200px);
+    border: none;
+  }
+}
+.dev-window-resize {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background-image: linear-gradient(
+    to bottom right,
+    transparent 65%,
+    silver,
+    transparent,
+    silver,
+    transparent,
+    silver,
+    transparent
+  );
+  z-index: 3;
+  cursor: zoom-in;
+}
+.dev-window-resize:hover {
+  width: 30px;
+  height: 30px;
+  background-image: linear-gradient(
+    to bottom right,
+    transparent 75%,
+    silver,
+    transparent,
+    silver,
+    transparent,
+    silver,
+    transparent
+  );
+}
+/*       start dock        */
+#dev-dock-container {
+  position: fixed;
+  bottom: 10px;
+  left: calc(50% - 100px);
+  display: flex;
+  justify-content: space-evenly;
+  border-bottom: 2px solid hsla(0, 100%, 0%, 0.4);
+  background-color: #80d2ff2d;
+  backdrop-filter: blur(1px);
+  border-radius: 8px;
+  width: 200px;
+  height: 40px;
+  transition: width 0.3s;
+  overflow: hidden;
+  z-index: 4;
+}
+#dev-dock-container div {
+  min-width: 20px;
+  margin: 10px;
+  border-radius: 7px;
+  text-align: center;
+  font-weight: bolder;
+}
+#dev-dock-container :hover {
+  animation-name: poing;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+}
+#dev-dock-container.dev-dock-resize {
+  width: 40px;
+  border-radius: 50%;
+  border: none;
+}
+@keyframes poing {
+  0% {
+    scale: 1;
+    translate: 0 0;
+    font-size: 16px;
+    font-weight: 400;
+  }
+  50% {
+    scale: 1.2;
+    translate: 0 -6px;
+    font-weight: 900;
+  }
+  100% {
+    scale: 1;
+    translate: 0 0;
+    font-size: 16px;
+    font-weight: 400;
+  }
+}
+/*         end dock        */
+
+/* /window/console/layout/main.js */
+#dev-layout-console {
+  height: 100%;
+  display: grid;
+  grid-template-rows: 20px 1fr;
+}
+/* /window/console/layout/toolBarL.js */
+#dev-toolBarL-console {
+  background-color: blue;
+  display: flex;
+  justify-content: center;
+}
+/* /window/console/layout/mainLSection.js */
+#dev-console-main-section {
+  height: 100%;
+  overflow: auto;
+}
+#dev-console-main-section::-webkit-scrollbar {
+  display: none;
+}
+/* log start */
+/* /window/console/MDev/main.js */
+.dev-console-main-container {
+  height: 100%;
+}
+
+/* /window/console/MDev/management.js */
+.dev-console-msgContainer {
+  display: flex;
+}
+.dev-console-msgContainer:nth-child(odd) {
+  border-bottom: 2px solid;
+}
+.dev-console-msg-success {
+  border-left: 2px solid green;
+}
+.dev-console-msg-error {
+  border-left: 2px solid red;
+}
+.dev-console-msg-info {
+  border-left: 2px solid blue;
+}
+.dev-console-msg-warn {
+  border-left: 2px solid yellow;
+}
+.dev-console-msg-test {
+  border-left: 2px solid pink;
+}
+.dev-console-msg-time {
+  border-left: 2px solid #8b15e2;
+}
+/* /window/console/formatters/primitives/boolean.js*/
+.dev-console-boolean {
+  color: #f90;
+}
+/* /window/console/formatters/primitives/null.js*/
+.dev-console-null {
+  color: #999;
+  font-style: italic;
+}
+
+/* /window/console/formatters/primitives/number.js*/
+.dev-console-number {
+  color: #0070f3;
+}
+/* /window/console/formatters/primitives/string.js*/
+.dev-console-string {
+  color: #2dbd2d;
+}
+/* /window/console/formatters/primitives/undefined.js*/
+.dev-console-undefined {
+  color: #f20;
+  font-style: italic;
+}
+/* /window/console/formatters/nunPrimitive/array.js*/
+.dev-console-array {
+  padding-left: 5px;
+  font-size: 90%;
+}
+
+.dev-console-array-header {
+  display: flex;
+  width: fit-content;
+  gap: 5px;
+}
+.dev-console-array-title {
+  background-color: orange;
+  color: yellow;
+}
+.dev-console-array-brecket {
+  color: yellow;
+}
+.dev-console-array-key {
+  align-self: center;
+  color: yellow;
+  margin-inline: 5px;
+}
+.dev-console-array-items-container {
+  display: flex;
+  margin-left: 0.5rem;
+  border-left: 2px solid blue;
+  white-space: nowrap;
+}
+/* /window/console/formatters/nunPrimitive/object.js*/
+.dev-console-object {
+  padding-left: 5px;
+}
+.dev-console-object-header {
+  display: flex;
+  width: fit-content;
+  gap: 5px;
+}
+.dev-console-object-title {
+  background-color: green;
+  color: red;
+}
+.dev-console-object-brecket {
+  color: red;
+}
+.dev-console-object-key {
+  align-self: center;
+  color: red;
+  margin-inline: 3px;
+  white-space: nowrap;
+}
+
+.dev-console-object-items-container {
+  display: flex;
+  margin-left: 0.5em;
+  border-left: 2px double red;
+}
