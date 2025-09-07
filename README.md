@@ -131,3 +131,11 @@ style app fill:gray,stroke:red
 style browser fill:gray,stroke:red
 
 ```
+# Console
+```mermaid
+sequenceDigrams
+participant manager
+participant storage
+participant format
+participant layout
+```
