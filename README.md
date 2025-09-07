@@ -88,7 +88,7 @@ src
 
 # App Flow
 
-```mermaid---
+```mermaid
 flowchart TB
 
 app([App])
