@@ -88,14 +88,46 @@ src
 
 # App Flow
 
-```mermaid
+```mermaid---
 flowchart TB
+
 app([App])
+
 dock([dock])
-dockBtn[console]
-window([window])
+
 app --> dock
-dock --> dockBtn
-dockBtn -->|click| window
+
+conBtn([conBtn])
+eleBtn([eleBtn])
+netBtn([netBtn])
+
+dock --> conBtn
+dock --> eleBtn
+dock --> netBtn
+
+devtools([devtools])
+
+conBtn --> |click| devtools
+eleBtn --> |click| devtools
+netBtn --> |click| devtools
+
+conManager([conManager])
+eleManager([eleManager])
+netManager([netManager])
+
+devtools --> conManager
+devtools --> eleManager
+devtools --> netManager
+
+screen([screen])
+
+conManager --layout--> screen
+eleManager --layout--> screen
+netManager --layout--> screen
+
+screen --> browser[browser]
+
+style app fill:gray,stroke:red
+style browser fill:gray,stroke:red
 
 ```
