@@ -133,7 +133,7 @@ style browser fill:gray,stroke:red
 ```
 # Console
 ```mermaid
-sequenceDigrams
+sequenceDiagram
 participant manager
 participant storage
 participant format
