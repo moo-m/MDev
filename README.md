@@ -135,7 +135,12 @@ style browser fill:gray,stroke:red
 ```mermaid
 sequenceDiagram
 participant manager
-participant storage
+participant store
 participant format
 participant layout
+manager ->> store:giv me the logs
+store ->>manager:{catagore,data}
+manager ->> format:{catagore,data}
+format ->>layout:container
+layout ->> manager:fully layout
 ```
