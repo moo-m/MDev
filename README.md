@@ -91,58 +91,54 @@ src
 ```mermaid
 flowchart TB
 
-app([App])
+App([MDiv])
 
-dock([dock])
+Dock([dock])
 
-app --> dock
+App --> Dock
 
-conBtn([conBtn])
-eleBtn([eleBtn])
-netBtn([netBtn])
+ConBtn([conBtn])
+EleBtn([eleBtn])
+NetBtn([netBtn])
 
-dock --> conBtn
-dock --> eleBtn
-dock --> netBtn
+Dock --> ConBtn
+Dock --> EleBtn
+Dock --> NetBtn
 
-devtools([devtools])
+DevTools([devtools])
 
-conBtn --> |click| devtools
-eleBtn --> |click| devtools
-netBtn --> |click| devtools
+ConBtn --> |click| Devtools
+EleBtn --> |click| Devtools
+NetBtn --> |click| Devtools
 
-conManager([conManager])
-eleManager([eleManager])
-netManager([netManager])
+ConManager([con manager])
+EleManager([ele manager])
+NetManager([net manager])
 
-devtools --> conManager
-devtools --> eleManager
-devtools --> netManager
+Devtools --> ConManager
+Devtools --> EleManager
+Devtools --> NetManager
 
-screen([screen])
+Browser[browser]
 
-conManager -. layout .-> screen
-eleManager -. layout .-> screen
-netManager -. layout .-> screen
+ConManager -. console window .-> Browser
+EleManager -. element window .-> Browser
+NetManager -. network window .-> Browser
 
-screen -.->|console| browser[browser]
-screen -.->|element| browser[browser]
-screen -.->|network| browser[browser]
-
-style app fill:gray,stroke:red
-style browser fill:gray,stroke:red
+style App fill:gray,stoke:red
+style Browser fill:gray,stroke:red
 
 ```
 # Console
 ```mermaid
 sequenceDiagram
-participant manager
-participant store
-participant format
-participant layout
-manager ->> store:giv me the logs
-store ->>manager:{catagore,data}
-manager ->> format:{catagore,data}
-format ->>layout:container
-layout ->> manager:fully layout
+participant Manager
+participant Mtore
+participant Format
+participant Layout
+Manager ->> Store:giv me the logs
+Store ->> Manager:{catagore,data}
+Manager ->> Format:{catagore,data}
+Format ->> Layout:container
+Layout ->> Manager:fully layout
 ```
