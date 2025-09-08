@@ -129,7 +129,6 @@ ConsoleManager -. console window .-> Browser
 ElementManager -. element window .-> Browser
 NetworkManager -. network window .-> Browser
 
-	linkStyle 12 color:#000000
 ```
 # Console
 ```mermaid
@@ -156,7 +155,8 @@ Console ->>Devtools:container
 else
 
 Store->>Console:no
-Console->>Layout:giv me an empty layout
+Note over Console:i will create fake data
+Console->>Layout:giv me a layout
 Layout ->> Console:{main,toolbar}
 Console ->>Devtools:container
 
