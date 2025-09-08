@@ -148,7 +148,8 @@ alt
 Store->>Console:yes, take this
 Console ->> Format:[data]
 Note over Format:formating
-Format ->> Layout:wrap this data
+Format ->> Console: container
+Console->>Layout:wrap this data
 Layout ->> Console:{main,toolbar}
 Console ->>Devtools:container
 
