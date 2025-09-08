@@ -139,13 +139,49 @@ participant Console
 participant Store
 participant Format
 participant Layout
+participant LogMethods
 
-Devtools->>Console:giv me the content
-Console ->> Store:giv me the logs
-Store ->> Console:{catagore,data}
-Console ->> Format:{catagore,data}
-Format ->> Layout:container
-Layout ->> Console:fully layout
+Devtools->>Console:giv me your content
+Console ->> Store:do you have any data
+
+alt
+Store->>Console:yes, take this
+Console ->> Format:[data]
+Note over Format:formating
+Format ->> Layout:wrap this data
+Layout ->> Console:layout
 Console ->>Devtools:container
+
+else
+
+Store->>Console:no
+Console->>Layout:giv me an empty layout
+Layout ->> Console:empty layout
+Console ->>Devtools:container
+
+end
+
+LogMethods->>Store:hey. new data
+Note over Store:i will send to Console
+Store -->> Console: are you here 
+
+alt
+
+Console->>Store:yes
+Store ->>Console:this for you
+Console ->> Format:[data]
+Note over Format:formating
+Format ->> Layout:wrap this data
+Layout ->> Console:layout
+Console ->>Devtools:container
+
+else
+
+Console->>Store:no
+Store ->>Console:call me, i have data for you
+
+end
+
 Note over Devtools:add the container <br/>to the screen created <br/>then render on window
+
 ```
