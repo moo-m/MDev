@@ -107,26 +107,23 @@ Dock --> NetworkBtn
 
 DevTools([devtools])
 
-ConsoleBtn --> |click| DevTools
-ElementBtn --> |click| DevTools
-NetworkBtn --> |click| DevTools
+ConsoleBtn -.-> |click| DevTools
+ElementBtn -.-> |click| DevTools
+NetworkBtn -.-> |click| DevTools
 
 ConsoleManager([console manager])
 ElementManager([element manager])
 NetworkManager([network manager])
 
-DevTools --> ConsoleManager
-DevTools --> ElementManager
-DevTools --> NetworkManager
+DevTools -.-> ConsoleManager
+DevTools -.-> ElementManager
+DevTools -.-> NetworkManager
 
 Browser[browser]
 
 ConsoleManager -. console window .-> Browser
 ElementManager -. element window .-> Browser
 NetworkManager -. network window .-> Browser
-
-style MDiv fill:gray,stoke:red
-style Browser fill:gray,stroke:red
 
 ```
 # Console
