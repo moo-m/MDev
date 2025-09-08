@@ -91,41 +91,41 @@ src
 ```mermaid
 flowchart TB
 
-App([MDiv])
+MDiv([MDiv])
 
 Dock([dock])
 
-App --> Dock
+MDiv --> Dock
 
-ConBtn([conBtn])
-EleBtn([eleBtn])
-NetBtn([netBtn])
+ConsoleBtn([console btn])
+ElementBtn([element btn])
+NetworkBtn([network btn])
 
-Dock --> ConBtn
-Dock --> EleBtn
-Dock --> NetBtn
+Dock --> ConsoleBtn
+Dock --> ElementBtn
+Dock --> NetworkBtn
 
 DevTools([devtools])
 
-ConBtn --> |click| DevTools
-EleBtn --> |click| DevTools
-NetBtn --> |click| DevTools
+ConsoleBtn --> |click| DevTools
+ElementBtn --> |click| DevTools
+NetworkBtn --> |click| DevTools
 
-ConManager([con manager])
-EleManager([ele manager])
-NetManager([net manager])
+ConsoleManager([console manager])
+ElementManager([element manager])
+NetworkManager([network manager])
 
-DevTools --> ConManager
-DevTools --> EleManager
-DevTools --> NetManager
+DevTools --> ConsoleManager
+DevTools --> ElementManager
+DevTools --> NetworkManager
 
 Browser[browser]
 
-ConManager -. console window .-> Browser
-EleManager -. element window .-> Browser
-NetManager -. network window .-> Browser
+ConsoleManager -. console window .-> Browser
+ElementManager -. element window .-> Browser
+NetworkManager -. network window .-> Browser
 
-style App fill:gray,stoke:red
+style MDiv fill:gray,stoke:red
 style Browser fill:gray,stroke:red
 
 ```
