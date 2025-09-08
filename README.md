@@ -121,11 +121,13 @@ devtools --> netManager
 
 screen([screen])
 
-conManager --layout--> screen
-eleManager --layout--> screen
-netManager --layout--> screen
+conManager --. layout .--> screen
+eleManager --. layout .--> screen
+netManager --. layout .--> screen
 
-screen --> browser[browser]
+screen -.->|console| browser[browser]
+screen -.->|element| browser[browser]
+screen -.->|network| browser[browser]
 
 style app fill:gray,stroke:red
 style browser fill:gray,stroke:red
