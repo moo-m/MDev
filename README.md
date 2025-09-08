@@ -149,14 +149,14 @@ Store->>Console:yes, take this
 Console ->> Format:[data]
 Note over Format:formating
 Format ->> Layout:wrap this data
-Layout ->> Console:layout
+Layout ->> Console:{main,toolbar}
 Console ->>Devtools:container
 
 else
 
 Store->>Console:no
 Console->>Layout:giv me an empty layout
-Layout ->> Console:empty layout
+Layout ->> Console:{main,toolbar}
 Console ->>Devtools:container
 
 end
