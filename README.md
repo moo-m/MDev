@@ -95,6 +95,8 @@ MDiv[MDiv]
 
 Dock([dock])
 
+Bind([bind log to windwo])
+
 ConsoleBtn([console btn])
 ElementBtn([element btn])
 NetworkBtn([network btn])
@@ -107,7 +109,9 @@ NetworkManager([network manager])
 
 Browser[browser]
 
-MDiv --> Dock
+MDiv ===> Dock
+
+MDiv==>Bind
 
 Dock --> ConsoleBtn
 Dock --> ElementBtn
@@ -125,7 +129,7 @@ ConsoleManager -. console window .-> Browser
 ElementManager -. element window .-> Browser
 NetworkManager -. network window .-> Browser
 
-
+	linkStyle 12 color:#000000
 ```
 # Console
 ```mermaid
