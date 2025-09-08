@@ -107,17 +107,17 @@ Dock --> NetBtn
 
 DevTools([devtools])
 
-ConBtn --> |click| Devtools
-EleBtn --> |click| Devtools
-NetBtn --> |click| Devtools
+ConBtn --> |click| DevTools
+EleBtn --> |click| DevTools
+NetBtn --> |click| DevTools
 
 ConManager([con manager])
 EleManager([ele manager])
 NetManager([net manager])
 
-Devtools --> ConManager
-Devtools --> EleManager
-Devtools --> NetManager
+DevTools --> ConManager
+DevTools --> EleManager
+DevTools --> NetManager
 
 Browser[browser]
 
