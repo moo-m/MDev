@@ -133,7 +133,7 @@ style Browser fill:gray,stroke:red
 ```mermaid
 sequenceDiagram
 participant Manager
-participant Mtore
+participant Store
 participant Format
 participant Layout
 Manager ->> Store:giv me the logs
