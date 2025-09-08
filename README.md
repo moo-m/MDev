@@ -162,7 +162,7 @@ Console ->>Devtools:container
 end
 
 LogMethods->>Store:hey. new data
-Note over Store:i will send to Console
+Note over Store:i will save it then<br/>send to Console
 Store -->> Console: are you here 
 
 alt
@@ -171,9 +171,8 @@ Console->>Store:yes
 Store ->>Console:this for you
 Console ->> Format:[data]
 Note over Format:formating
-Format ->> Layout:wrap this data
-Layout ->> Console:layout
-Console ->>Devtools:container
+Format ->> Console:pkg
+Note over Console:i will handle it
 
 else
 
