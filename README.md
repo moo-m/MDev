@@ -121,9 +121,9 @@ devtools --> netManager
 
 screen([screen])
 
-conManager --. layout .--> screen
-eleManager --. layout .--> screen
-netManager --. layout .--> screen
+conManager -. layout .-> screen
+eleManager -. layout .-> screen
+netManager -. layout .-> screen
 
 screen -.->|console| browser[browser]
 screen -.->|element| browser[browser]
