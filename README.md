@@ -134,13 +134,18 @@ NetworkManager -. network window .-> Browser
 # Console
 ```mermaid
 sequenceDiagram
-participant Manager
+participant Devtools
+participant Console
 participant Store
 participant Format
 participant Layout
-Manager ->> Store:giv me the logs
-Store ->> Manager:{catagore,data}
-Manager ->> Format:{catagore,data}
+
+Devtools->>Console:giv me the content
+Console ->> Store:giv me the logs
+Store ->> Console:{catagore,data}
+Console ->> Format:{catagore,data}
 Format ->> Layout:container
-Layout ->> Manager:fully layout
+Layout ->> Console:fully layout
+Console ->>Devtools:container
+Note over Devtools:add the container <br/>to the screen created <br/>then render on window
 ```
