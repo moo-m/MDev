@@ -162,6 +162,8 @@ Console ->>Devtools:container
 
 end
 
+Note over Devtools:add the container <br/>to the screen created <br/>then render on window
+
 LogMethods->>Console:hey, add this.
 Note over Console:i will save it in storage<br/>then added it if can
 Console -->> Store: save this data
@@ -180,7 +182,5 @@ Console->>Console:no
 Console ->>Console:ok, i will render when i can
 
 end
-
-Note over Devtools:add the container <br/>to the screen created <br/>then render on window
 
 ```
