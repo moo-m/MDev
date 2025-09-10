@@ -162,23 +162,22 @@ Console ->>Devtools:container
 
 end
 
-LogMethods->>Store:hey. new data
-Note over Store:i will save it then<br/>send to Console
-Store -->> Console: are you here 
-
+LogMethods->>Console:hey, add this.
+Note over Console:i will save it in storage<br/>then added it if can
+Console -->> Store: save this data
+note over Console: am i activate
 alt
 
-Console->>Store:yes
-Store ->>Console:this for you
+Console->>Console:yes
 Console ->> Format:[data]
 Note over Format:formating
 Format ->> Console:pkg
-Note over Console:i will handle it
+Note over Console:i will render it on screen
 
 else
 
-Console->>Store:no
-Store ->>Console:call me, i have data for you
+Console->>Console:no
+Console ->>Console:ok, i will render when i can
 
 end
 
