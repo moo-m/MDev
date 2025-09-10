@@ -185,7 +185,7 @@ end
 
 ```
 > ## Format
-```mermain
+```mermaid
 sequenceDiagram
 participant Format
 participant Primitives
