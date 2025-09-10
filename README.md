@@ -184,3 +184,25 @@ Console ->>Console:ok, i will render when i can
 end
 
 ```
+> ## Format
+```mermain
+sequenceDiagram
+participant Format
+participant Primitives
+participant NunPrimitives
+
+loop array of data
+Note over Format:is data primitive?
+alt
+Format->>Primitives:yes.
+Primitives ->>Format:span[data]
+else
+Format->>NunPrimitives:no.
+loop nun primitives
+NunPrimitives-->>Format:return to is data primitives then giv me the result
+end
+NunPrimitives-->>Format:pkg
+end
+
+end
+```
