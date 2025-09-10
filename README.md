@@ -185,7 +185,7 @@ end
 
 ```
 > ## Format
->```mermaid
+```mermaid
 sequenceDiagram
 participant Format
 participant Primitives
@@ -205,4 +205,4 @@ NunPrimitives-->>Format:pkg
 end
 
 end
->```
+```
