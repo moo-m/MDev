@@ -131,7 +131,8 @@ NetworkManager -. network window .-> Browser
 
 ```
 # Console
-```mermaidsequenceDiagram
+```mermaid
+sequenceDiagram
 participant Devtools
 participant Console
 participant Store
