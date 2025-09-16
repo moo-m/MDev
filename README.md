@@ -131,25 +131,27 @@ NetworkManager -. network window .-> Browser
 
 ```
 # Console
-```mermaid
-sequenceDiagram
+```mermaidsequenceDiagram
 participant Devtools
 participant Console
 participant Store
 participant Format
 participant Layout
 participant LogMethods
-
+Note over Devtools:+div(screen)
 Devtools->>Console:giv me your content
+Note over Console:+div(consoleContainer)
 Console ->> Store:do you have any data
 
 alt
-Store->>Console:yes, take this
+Store->>Console:yes, take it
 Console ->> Format:[data]
 Note over Format:formating
-Format ->> Console: container
+Note over Format:+fragmentElement
+Format ->> Console:fragmentElement
 Console->>Layout:wrap this data
-Layout ->> Console:{main,toolbar}
+Note over Layout:+div*2(mainLayout,navbar)
+Layout ->> Console:{main,navbar}
 Console ->>Devtools:container
 
 else
@@ -182,7 +184,6 @@ Console->>Console:no
 Console ->>Console:ok, i will render when i can
 
 end
-
 ```
 > ## Format
 ```mermaid
