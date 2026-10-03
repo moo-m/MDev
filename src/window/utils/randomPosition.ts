@@ -1,16 +1,14 @@
-import { rectU } from "./rectUtils.js";
-export function randomPosition() {
+import { SCREENT } from "../../types/window/main";
+export function randomPosition(): SCREENT.winPosition {
   // area of screen
-  const { width, height } = rectU(
-    //@ts-expect-error
-    document.documentElement,
-  );
+  const width = document.documentElement.clientWidth;
+  const height = document.documentElement.clientHeight;
 
   const randomNum = Math.round(Math.random() * 50 + 1);
   return {
-    width: 350,
-    height: 250,
-    top: height / 2 - randomNum,
-    left: width / 2 - randomNum,
+    width: 370,
+    height: 170,
+    top: height / 2 - 70 - randomNum,
+    left: width / 2 - 180,
   };
 }

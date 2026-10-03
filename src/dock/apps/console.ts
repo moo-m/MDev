@@ -1,24 +1,10 @@
 import DevTools from "../../window/main.js";
-import { CONSOLET } from "../../types/dock/apps/console";
-export class Console implements CONSOLET {
-  consoleApp: HTMLDivElement;
+import Proto from "./prototype.js";
+export default class Console extends Proto {
   constructor() {
-    this.consoleApp = document.createElement("div");
+    super("console","c");
   }
-  setup() {
-    this.consoleApp.textContent = "e";
-    this.consoleApp.addEventListener("click", () => {
-      //@ts-expect-error
-      const consoleWindow: HTMLDivElement = document.getElementById(
-        "dev-window-screen-console",
-      )!;
-      if (consoleWindow) {
-        consoleWindow.classList.toggle("dev-window-screen-console-hidden");
-      } else {
-        new DevTools().consoleApp()
-      }
-    });
-
-    return this.consoleApp;
+  protected clickHandler() {
+    new DevTools().consoleApp();
   }
 }

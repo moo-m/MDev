@@ -1,54 +1,46 @@
-export class LogBind {
-  methodNames: (
-    | "green"
-    | "red"
-    | "blue"
-    | "yellow"
-    | "test"
-    | "time"
-    | "timeEnd"
-  )[];
-  constructor(private mdev: any) {
-    this.methodNames = [
-      "green",
-      "red",
-      "blue",
-      "yellow",
-      "test",
-      "time",
-      "timeEnd",
-    ];
-    console.log("0-bind");
-  }
-  public init() {
+import { CONSOLET } from "../../../types/window/console/main";
+export default class LogBind {
+  static methodNames: CONSOLET.methodNamer = [
+    "green",
+    "red",
+    "blue",
+    "yellow",
+    "test",
+    "time",
+    "timeEnd",
+    "clear",
+  ];
+
+  public static bind(methods: any) {
     //usage [green](data)
-    this.setOnWindow();
+    LogBind.setOnWindow(methods);
     //usage [data].green()
-    this.setOnObject();
+    LogBind.setOnObject(methods);
+    //usage console[log,error...](data)
+    // LogBind.replaceConsole();
   }
-  private setOnWindow() {
+  private static setOnWindow(methods: any) {
     //make console methods usable
     //add method to global
 
-    for (const name of this.methodNames) {
+    for (const name of LogBind.methodNames) {
       if (window) {
         window[name] = (...args: any[]) => {
-          (this.mdev as any)[name](...args);
+          (methods as any)[name](...args);
         };
       }
       (globalThis as any)[name] = (...args: any[]) => {
-        (this.mdev as any)[name](...args);
+        (methods as any)[name](...args);
       };
     }
   }
-  private setOnObject() {
-    const that = this;
+  private static setOnObject(methods: any) {
     //add method to Object
-    for (const name of this.methodNames) {
+    for (const name of LogBind.methodNames) {
       if (!Object.hasOwnProperty(name)) {
         Object.defineProperty(Object.prototype, name, {
           value: function () {
-            that.mdev[name](this);
+            methods[name](this);
           },
           writable: false,
           enumerable: false,
@@ -60,5 +52,45 @@ export class LogBind {
         );
       }
     }
+  }
+  private static replaceConsole() {
+    //make console logging into MDev console
+    const orginConsole = {
+      log: console.log.bind(console),
+      error: console.error.bind(console),
+      info: console.info.bind(console),
+      warn: console.warn.bind(console),
+      assert: console.assert.bind(console),
+      time: console.time.bind(console),
+      timeEnd: console.timeEnd.bind(console),
+    };
+    console.log = (...data) => {
+      window.green(...data);
+      orginConsole.log(...data);
+    };
+    console.error = (...data) => {
+      window.red(...data);
+      orginConsole.error(...data);
+    };
+    console.info = (...data) => {
+      window.blue(...data);
+      orginConsole.info(...data);
+    };
+    console.warn = (...data) => {
+      window.yellow(...data);
+      orginConsole.warn(...data);
+    };
+    console.assert = (condition, ...data) => {
+      window.test(condition, ...data);
+      orginConsole.assert(condition, ...data);
+    };
+    console.time = (label = "time start") => {
+      window.time(label);
+      orginConsole.time(label);
+    };
+    console.timeEnd = (label = "time end") => {
+      window.timeEnd(label);
+      orginConsole.timeEnd(label);
+    };
   }
 }

@@ -1,17 +1,6 @@
 import Screen from "../../../../screen/main.js";
-import { winPositionT } from "../../../../../types/window/main";
-import { rectU } from "../../../../utils/rectUtils.js";
+import { randomPosition } from "../../../../utils/randomPosition.js";
 export function separateHandler(container: HTMLDivElement) {
-  const { width, height } = rectU(
-    //@ts-expect-error
-    document.documentElement,
-  );
-  const position: winPositionT = {
-    width: 350,
-    height: 250,
-    top: height / 2 - 125 + Math.floor(Math.random() * 50 + 1),
-    left: width / 2 - 175 + Math.floor(Math.random() * 50 + 1),
-  };
   const node = container.cloneNode(true) as HTMLDivElement;
   node.addEventListener("click", (e: Event) => {
     if (
@@ -27,5 +16,9 @@ export function separateHandler(container: HTMLDivElement) {
       );
     }
   });
-  new Screen("console-separated", node, position);
+  new Screen(
+    `console-separated-${Math.round(Math.random() * 10)}`,
+    node,
+    randomPosition(),
+  );
 }

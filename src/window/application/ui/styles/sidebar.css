@@ -1,0 +1,12 @@
+.dev-application-sidebar::-webkit-scrollbar {
+  width: 7px;
+}
+
+.dev-application-sidebar::-webkit-scrollbar-thumb {
+  background: #3b4049;
+  border-radius: 4px;
+}
+
+.dev-application-sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}

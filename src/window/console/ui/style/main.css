@@ -1,0 +1,426 @@
+/* ============================================================
+   Console Panel
+   ============================================================ */
+
+#dev-console-container {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: 32px minmax(0, 1fr) 32px;
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+
+  color: #d7d7d7;
+  background: #1e1e1e;
+
+  font-family:
+    Arial,
+    sans-serif;
+  font-size: 13px;
+}
+
+#dev-console-container *,
+#dev-console-container *::before,
+#dev-console-container *::after {
+  box-sizing: border-box;
+}
+
+/* ============================================================
+   Console Navigation
+   ============================================================ */
+
+#dev-console-layout-nav {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 0 8px;
+
+  border-bottom: 1px solid #333;
+  background: #252526;
+}
+
+/* ============================================================
+   Filter Buttons
+   ============================================================ */
+
+#dev-console-nav-filter {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  width: auto;
+  padding: 0 4px;
+}
+
+#dev-console-nav-filter button {
+  width: 10px;
+  height: 10px;
+  flex: 0 0 10px;
+
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+
+  cursor: pointer;
+
+  transition:
+    transform 100ms ease,
+    opacity 100ms ease;
+}
+
+#dev-console-nav-filter button:hover {
+  transform: scale(1.3);
+}
+
+#dev-console-nav-filter button:active {
+  transform: scale(1.1);
+}
+
+/* ============================================================
+   Clear Button
+   ============================================================ */
+
+#dev-console-nav-clear-btn {
+  width: 26px;
+  height: 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-left: 2px;
+  padding: 0;
+
+  border: 1px solid #444;
+  border-radius: 3px;
+
+  color: #aaa;
+  background: #303030;
+
+  font-size: 11px;
+  cursor: pointer;
+}
+
+#dev-console-nav-clear-btn:hover {
+  color: #ddd;
+  background: #3b3b3b;
+}
+
+#dev-console-nav-clear-btn:active {
+  background: #252525;
+}
+
+/* ============================================================
+   Console Main
+   ============================================================ */
+
+#dev-console-layout-main {
+  min-width: 0;
+  min-height: 0;
+
+  overflow: auto;
+
+  padding: 7px 8px;
+
+  background: #1e1e1e;
+}
+
+#dev-console-layout-main::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+#dev-console-layout-main::-webkit-scrollbar-thumb {
+  background: #3b4049;
+  border-radius: 4px;
+}
+
+#dev-console-layout-main::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ============================================================
+   Console Messages
+   ============================================================ */
+
+.dev-console-msg-wrapper {
+  min-width: 0;
+}
+
+.dev-console-msg-wrapper div {
+  margin-block: 2px;
+  padding: 3px 7px;
+
+  color: #d7d7d7;
+
+  line-height: 1.5;
+
+  overflow-wrap: anywhere;
+}
+
+.dev-console-msg-wrapper div:hover {
+  background: #252525;
+}
+
+/* ============================================================
+   Welcome
+   ============================================================ */
+
+.dev-console-msg-welcome {
+  padding: 8px !important;
+
+  border-bottom: 1px solid #333;
+
+  color: #858585 !important;
+
+  background:
+    linear-gradient(
+      to right,
+      rgba(0, 122, 204, 0.10),
+      transparent
+    );
+
+  text-align: center;
+}
+
+/* ============================================================
+   Message Types
+   ============================================================ */
+
+.dev-console-msg-success {
+  border-left: 2px solid #4caf50;
+  background:
+    linear-gradient(
+      to right,
+      rgba(76, 175, 80, 0.06),
+      transparent
+    );
+}
+
+.dev-console-msg-error {
+  border-left: 2px solid #f14c4c;
+  background:
+    linear-gradient(
+      to right,
+      rgba(241, 76, 76, 0.07),
+      transparent
+    );
+}
+
+.dev-console-msg-info {
+  border-left: 2px solid #3794ff;
+  background:
+    linear-gradient(
+      to right,
+      rgba(55, 148, 255, 0.06),
+      transparent
+    );
+}
+
+.dev-console-msg-warn {
+  border-left: 2px solid #cca700;
+  background:
+    linear-gradient(
+      to right,
+      rgba(204, 167, 0, 0.06),
+      transparent
+    );
+}
+
+.dev-console-msg-test {
+  border-left: 2px solid #c586c0;
+  background:
+    linear-gradient(
+      to right,
+      rgba(197, 134, 192, 0.06),
+      transparent
+    );
+}
+
+.dev-console-msg-time {
+  border-left: 2px solid #4ec9b0;
+  background:
+    linear-gradient(
+      to right,
+      rgba(78, 201, 176, 0.06),
+      transparent
+    );
+}
+
+/* ============================================================
+   Console Value Syntax
+   ============================================================ */
+
+.dev-console-boolean {
+  color: #569cd6;
+}
+
+.dev-console-null {
+  color: #858585;
+  font-style: italic;
+}
+
+.dev-console-number {
+  color: #b5cea8;
+}
+
+.dev-console-string {
+  color: #ce9178;
+}
+
+.dev-console-undefined {
+  color: #f48771;
+  font-style: italic;
+}
+
+/* ============================================================
+   Arrays / Objects
+   ============================================================ */
+
+.dev-console-array,
+.dev-console-object {
+  padding-left: 5px;
+}
+
+.dev-console-array-header,
+.dev-console-object-header {
+  width: fit-content;
+
+  display: flex;
+  align-items: center;
+
+  gap: 5px;
+}
+
+.dev-console-array-title,
+.dev-console-array-brecket,
+.dev-console-array-key {
+  color: #dcdcaa;
+}
+
+.dev-console-object-title,
+.dev-console-object-brecket,
+.dev-console-object-key {
+  color: #9cdcfe;
+}
+
+/* ============================================================
+   Nested Values
+   ============================================================ */
+
+.dev-console-array-items-container,
+.dev-console-object-items-container {
+  display: flex;
+
+  margin-left: 0.5rem;
+  padding-left: 7px;
+
+  border-left: 1px solid #3f3f46;
+
+  white-space: nowrap;
+}
+
+.dev-console-array-items-container:hover,
+.dev-console-object-items-container:hover {
+  border-left-color: #007acc;
+}
+
+.dev-console-separate-nunPrimitives {
+  color: #858585;
+}
+
+/* ============================================================
+   Console Input
+   ============================================================ */
+
+.dev-console-main-container-input {
+  position: relative;
+
+  width: 100%;
+  min-width: 0;
+  min-height: 32px;
+
+  display: flex;
+  align-items: center;
+
+  padding: 3px 8px;
+
+  border-top: 1px solid #333;
+
+  background: #252526;
+
+  overflow: hidden;
+}
+
+.dev-console-main-input {
+  flex: 1;
+  min-width: 0;
+
+  height: 25px;
+
+  padding: 0 7px;
+
+  border: 1px solid #3f3f46;
+  border-radius: 3px;
+  outline: none;
+
+  color: #d7d7d7;
+  background: #181818;
+
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    monospace;
+
+  font-size: 12px;
+}
+
+.dev-console-main-input:focus {
+  border-color: #007acc;
+}
+
+.dev-console-main-input::placeholder {
+  color: #666;
+  text-align: left;
+}
+
+.dev-console-main-btn-submit {
+  height: 25px;
+
+  margin-left: 5px;
+  padding: 0 9px;
+
+  border: 1px solid #444;
+  border-radius: 3px;
+
+  color: #ccc;
+  background: #303030;
+
+  cursor: pointer;
+}
+
+.dev-console-main-btn-submit:hover {
+  color: #fff;
+  background: #3b3b3b;
+}
+
+.dev-console-main-btn-submit:active {
+  background: #252525;
+}
+
+/* ============================================================
+   Scrollbars
+   ============================================================ */
+
+#dev-console-container::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}

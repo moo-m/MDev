@@ -1,0 +1,17 @@
+.dev-storage {
+  contain: layout;
+}
+
+.dev-storage-row-key {
+  user-select: text;
+
+}
+
+.dev-storage-row-value {
+  user-select: text;
+}
+
+.dev-storage-row-value::selection,
+.dev-storage-row-key::selection {
+  background: #264f78;
+}

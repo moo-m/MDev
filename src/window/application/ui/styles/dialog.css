@@ -1,0 +1,184 @@
+.dev-ui-dialog-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+  box-sizing: border-box;
+
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.dev-ui-dialog {
+  width: min(520px, 100%);
+  max-height: calc(100vh - 40px);
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+
+  border: 1px solid #454545;
+  border-radius: 6px;
+
+  background: #252526;
+  color: #d7d7d7;
+
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.45);
+}
+
+.dev-ui-dialog-header {
+  min-height: 42px;
+
+  display: flex;
+  align-items: center;
+
+  box-sizing: border-box;
+
+  padding: 0 10px 0 14px;
+
+  border-bottom: 1px solid #333;
+}
+
+.dev-ui-dialog-title {
+  flex: 1;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.dev-ui-dialog-close {
+  width: 28px;
+  height: 28px;
+
+  padding: 0;
+
+  border: 0;
+  border-radius: 3px;
+
+  color: #aaa;
+  background: transparent;
+
+  font-size: 20px;
+  line-height: 28px;
+
+  cursor: pointer;
+}
+
+.dev-ui-dialog-close:hover {
+  color: #fff;
+  background: #3a3a3a;
+}
+
+.dev-ui-dialog-form {
+  display: flex;
+  flex-direction: column;
+
+  min-height: 0;
+}
+
+.dev-ui-dialog-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+
+  padding: 16px;
+
+  overflow-y: auto;
+}
+
+.dev-ui-dialog-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dev-ui-dialog-label {
+  color: #bbb;
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.dev-ui-dialog-input {
+  width: 100%;
+
+  min-height: 30px;
+
+  box-sizing: border-box;
+
+  padding: 6px 8px;
+
+  border: 1px solid #444;
+  border-radius: 3px;
+  outline: none;
+
+  color: #ddd;
+  background: #181818;
+
+  font: inherit;
+  resize: vertical;
+}
+
+.dev-ui-dialog-input:focus {
+  border-color: #007acc;
+}
+
+textarea.dev-ui-dialog-input {
+  min-height: 120px;
+  font-family: Consolas, monospace;
+  line-height: 1.4;
+}
+
+.dev-ui-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 7px;
+
+  padding: 10px 16px;
+
+  border-top: 1px solid #333;
+}
+
+.dev-ui-dialog-button {
+  min-width: 70px;
+  height: 28px;
+
+  padding: 0 12px;
+
+  border: 1px solid #007acc;
+  border-radius: 3px;
+
+  color: #fff;
+  background: #0e639c;
+
+  cursor: pointer;
+}
+
+.dev-ui-dialog-button:hover {
+  background: #1177bb;
+}
+
+.dev-ui-dialog-button.secondary {
+  border-color: #444;
+  color: #ccc;
+  background: #303030;
+}
+
+.dev-ui-dialog-button.secondary:hover {
+  background: #3b3b3b;
+}
+
+.dev-ui-dialog-button.danger {
+  border-color: #a33;
+  background: #8b3030;
+}
+
+.dev-ui-dialog-button.danger:hover {
+  background: #a43a3a;
+}

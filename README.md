@@ -32,7 +32,6 @@ src
 ├── types
 │   ├── dock
 │   │   ├── apps
-│   │   │   ├── console.d.ts
 │   │   │   └── element.d.ts
 │   │   └── main.d.ts
 │   ├── global.d.ts
@@ -53,21 +52,20 @@ src
     │   │   │   ├── main.ts
     │   │   │   └── object.ts
     │   │   ├── primitives
-    │   │   │   ├── boolean.ts
     │   │   │   ├── main.ts
-    │   │   │   ├── null.ts
-    │   │   │   ├── number.ts
-    │   │   │   ├── string.ts
-    │   │   │   └── undefined.ts
+    │   │   │   └── prototype.ts
     │   │   └── utils
     │   │       └── getType.ts
     │   ├── layout
-    │   │   └── main.ts
+    │   │   ├── main.ts
+    │   │   └── toolBar.ts
     │   ├── log
     │   │   ├── bind.ts
     │   │   ├── logger.ts
     │   │   └── main.ts
     │   ├── main.ts
+    │   ├── store
+    │   │   └── main.ts
     │   └── utils
     │       └── getTime.ts
     ├── element
@@ -139,20 +137,17 @@ participant Store
 participant Format
 participant Layout
 participant LogMethods
-Note over Devtools:+div(screen)
+
 Devtools->>Console:giv me your content
-Note over Console:+div(consoleContainer)
 Console ->> Store:do you have any data
 
 alt
-Store->>Console:yes, take it
+Store->>Console:yes, take this
 Console ->> Format:[data]
 Note over Format:formating
-Note over Format:+fragmentElement
-Format ->> Console:fragmentElement
+Format ->> Console: container
 Console->>Layout:wrap this data
-Note over Layout:+div*2(mainLayout,navbar)
-Layout ->> Console:{main,navbar}
+Layout ->> Console:{main,toolbar}
 Console ->>Devtools:container
 
 else
@@ -185,6 +180,7 @@ Console->>Console:no
 Console ->>Console:ok, i will render when i can
 
 end
+
 ```
 > ## Format
 ```mermaid
@@ -205,6 +201,5 @@ NunPrimitives-->>Format:return to is data primitives then giv me the result
 end
 NunPrimitives-->>Format:pkg
 end
-
 end
 ```

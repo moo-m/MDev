@@ -1,7 +1,7 @@
 import { FormatManager } from "../main.js";
 import { separateHandler } from "./handler/separate.js";
 export class ArrayF {
-  public format(array: any[]): HTMLDivElement {
+  public format(array: unknown[]): HTMLDivElement {
     const container = document.createElement("div");
     container.classList.add("dev-console-array");
     const header: HTMLDivElement = document.createElement("div");
@@ -39,7 +39,4 @@ export class ArrayF {
     container.append(rightBracket);
     return container;
   }
-  // 	private separateB(e: Event) {
-  // 		console.log(this);
-  // 	}
 }

@@ -1,7 +1,9 @@
-export type winPositionT = {
-  top: number;
-  left: number;
-  width: number;
-  height: number;
-  id?: number;
-};
+export namespace SCREENT {
+  type winPosition = {
+    top: number;
+    left: number;
+    width: number;
+    height: number;
+    id?: number;
+  };
+}

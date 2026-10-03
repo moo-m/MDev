@@ -1,39 +1,27 @@
+//@dock
 import { DOCKT } from "../types/dock/main";
-export class Dock implements DOCKT {
-  dockElement: HTMLDivElement;
-  constructor() {
-    this.dockElement = document.createElement("div");
-    this.dockElement.id = "dev-dock-container";
-  }
-  public run() {
-    document.body.append(this.dockElement);
-  }
-  public appsRender(app: HTMLDivElement) {
-    this.dockElement.append(app);
-  }
+import Console from "./apps/console.js";
+import Elements from "./apps/elements.js";
+import Application from "./apps/application.js";
+import SourcesApp from "./apps/sources.js";
+export default class Dock implements DOCKT {
+    dockElement: HTMLDivElement;
+    constructor() {
+        this.dockElement = document.createElement("div");
+        this.dockElement.id = "dev-dock-container";
+    }
+    public init() {
+        window.MDev.host!.append(this.dockElement);
+        //@console btn
+        this.appsRender(new Console().setup());
+        //@element btn
+        this.appsRender(new Elements().setup());
+        //@application btn
+        this.appsRender(new Application().setup());
+        //@sources btn
+        this.appsRender(new SourcesApp().setup());
+    }
+    public appsRender(app: HTMLDivElement) {
+        this.dockElement.append(app);
+    }
 }
-// 	public resize() {
-// 		this.dockElement.ondblclick = (e: MouseEvent) => {
-// 			(e.currentTarget as HTMLDivElement).classList.toggle(
-// 				"dev-dock-resize"
-// 			);
-// 			if (this.dockElement.classList.contains("dev-dock-resize")) {
-// 				this.dockElement.style.left = `${
-// 					this.dockElement.getBoundingClientRect().left + 80
-// 				}px`;
-// 			} else {
-// 				this.dockElement.style.left = `${
-// 					this.dockElement.getBoundingClientRect().left - 80
-// 				}px`;
-// 			}
-// 		};
-// 	}
-// 	private move() {
-// 		this.dockElement.addEventListener("touchmove", e => {
-// 			e.preventDefault();
-// 			if (this.dockElement.classList.contains("dev-dock-resize")) {
-// 				this.dockElement.style.left = `${e.touches[0].clientX - 20}px`;
-// 				this.dockElement.style.top = `${e.touches[0].clientY - 20}px`;
-// 			}
-// 		});
-// 	}

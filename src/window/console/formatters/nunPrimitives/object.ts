@@ -1,8 +1,7 @@
 import { FormatManager } from "../main.js";
 import { separateHandler } from "./handler/separate.js";
 export class ObjectF {
-  public format(obj: any): HTMLDivElement {
-    console.log("object", obj);
+  public format(obj: Record<string, unknown>): HTMLDivElement {
     const container = document.createElement("div");
     container.classList.add("dev-console-object");
     const header: HTMLDivElement = document.createElement("div");

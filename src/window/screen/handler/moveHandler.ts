@@ -1,57 +1,61 @@
-import { rectU } from "../../utils/rectUtils.js";
-import { winPositionT } from "../../../types/window/main";
+import { rectU } from "../utils/rectUtils.js";
+import { getDistance } from "../utils/getDistance.js";
 export class MoveHandler {
-  public static move(winEle: HTMLDivElement, position: winPositionT) {
-    let movable: boolean = true;
-    const moveBtn: HTMLDivElement = document.createElement("div");
-    moveBtn.classList.add("dev-window-move-btn");
-    moveBtn.textContent = "*";
-    moveBtn.addEventListener("click", () => {
-      movable = !movable;
-    });
-    winEle.appendChild(moveBtn);
+  public static move(winEle: HTMLDivElement) {
     let diffX: number, diffY: number;
+    let initialDistance: number = 0;
+    let initialRect: any;
     winEle.addEventListener(
       "touchstart",
       (e) => {
-        if (!movable) return;
-        const rect = rectU(winEle);
-        position = {
-          ...position,
-          top: rect.top,
-          left: rect.left,
-        };
-        diffX = e.touches[0].clientX - rect.left;
-        diffY = e.touches[0].clientY - rect.top;
+        if (e.touches.length == 2) {
+          e.stopPropagation();
+          e.preventDefault();
+          const rect = rectU(winEle);
+
+          initialRect = rect;
+          initialDistance = getDistance(e);
+
+          const midPointY = (e.touches[1].clientY + e.touches[0].clientY) / 2;
+          const midPointX = (e.touches[1].clientX + e.touches[0].clientX) / 2;
+          diffX = midPointX - rect.left;
+          diffY = midPointY - rect.top;
+        }
       },
       { passive: false },
     );
     winEle.addEventListener(
       "touchmove",
       (e) => {
-        if (!movable) return;
-        e.preventDefault();
-        e.stopPropagation();
-        winEle.style.top = `${e.touches[0].clientY - diffY}px`;
+        if (e.touches.length == 2) {
+          if (e.cancelable) {
+            e.preventDefault();
+          }
+          e.stopPropagation();
 
-        winEle.style.left = `${e.touches[0].clientX - diffX}px`;
+          // const rect = rectU(winEle);
+
+          const midPointY = (e.touches[1].clientY + e.touches[0].clientY) / 2;
+          const midPointX = (e.touches[1].clientX + e.touches[0].clientX) / 2;
+
+          const distance = (getDistance(e) - initialDistance) / 2;
+
+          winEle.style.height = `${initialRect.height + distance}px`;
+          winEle.style.top = `${midPointY - diffY - distance / 2}px`;
+          winEle.style.width = `${initialRect.width + distance}px`;
+          winEle.style.left = `${midPointX - diffX - distance / 2}px`;
+        }
       },
       { passive: false },
     );
     winEle.addEventListener(
       "touchend",
       () => {
-        if (!movable) return;
         const rect = rectU(winEle);
-        position = {
-          ...position,
-          top: rect.top,
-          left: rect.left,
-        };
-
-        winEle.style.setProperty("--dev-top", `${position.top}px`);
-
-        winEle.style.setProperty("--dev-left", `${position.left}px`);
+        winEle.style.setProperty("--dev-top", `${rect.top}px`);
+        winEle.style.setProperty("--dev-left", `${rect.left}px`);
+        winEle.style.setProperty("--dev-width", `${rect.width}px`);
+        winEle.style.setProperty("--dev-height", `${rect.height}px`);
       },
       { passive: true },
     );

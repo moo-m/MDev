@@ -1,0 +1,218 @@
+@import url("../window/application/ui/styles/main.css");
+@import url("../window/sources/ui/style/sources.css");
+@import url("../window/settings/ui/style/main.css");
+@import url("../window/console/ui/style/main.css");
+@import url("../window/elements/ui/style/main.css");
+
+/* ============================================================
+   إعادة ضبط أساسية
+   ============================================================ */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+html {
+    font-size: 16px;
+    -webkit-text-size-adjust: 100%;
+}
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-weight: 400;
+    line-height: 1.6;
+    text-align: left;
+    letter-spacing: 0.3px;
+    word-spacing: 1.5px;
+    text-rendering: optimizeLegibility;
+    direction: ltr;
+    unicode-bidi: embed;
+    cursor: default;
+    user-select: none;
+    scroll-behavior: smooth;
+    transition:
+        background 0.3s,
+        color 0.3s;
+    animation: fadeIn 0.6s ease;
+}
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* ============================================================
+   Dock (أسفل الشاشة)
+   ============================================================ */
+#dev-dock-container {
+    position: fixed;
+    bottom: 10px;
+    left: calc(50% - 100px);
+    display: flex;
+    justify-content: space-evenly;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.4);
+    background-color: rgba(128, 210, 255, 0.18);
+    backdrop-filter: blur(4px);
+    border-radius: 8px;
+    width: 200px;
+    height: 40px;
+    z-index: 4;
+}
+#dev-dock-container div {
+    min-width: 20px;
+    margin: 10px;
+    border-radius: 7px;
+    text-align: center;
+    font-weight: bold;
+    transform: scale(1);
+    transition: transform 0.2s ease;
+}
+#dev-dock-container div:hover {
+    transform: scale(1.4);
+}
+
+/* ============================================================
+   النوافذ العائمة (Dev Screens)
+   ============================================================ */
+[id^="dev-screen"] {
+    font-family: "Fira Code", monospace;
+    user-select: none;
+    position: absolute;
+    --dev-width: 350px;
+    --dev-height: 250px;
+    --dev-top: calc(50% - 125px);
+    --dev-left: calc(50% - 175px);
+    width: var(--dev-width);
+    height: var(--dev-height);
+    top: var(--dev-top);
+    left: var(--dev-left);
+    border: 1.5px solid var(--border-color);
+    backdrop-filter: blur(6px);
+    background-color: rgba(0, 0, 0, 0.45);
+    border-radius: 15px;
+    box-shadow:
+        0 15px 46px var(--shadow-window),
+        inset 0 -8px 16px var(--shadow-window);
+    animation: appear 0.4s linear;
+    overflow: hidden;
+    transition:
+        opacity 0.1s,
+        box-shadow 0.1s;
+    cursor: move;
+    z-index: 1;
+  min-height: 150px; 
+  min-width: 150px;
+
+}
+[id^="dev-screen"]:hover {
+    z-index: 2;
+}
+.dev-screen-hidden {
+    animation: hidden 0.4s linear forwards;
+}
+
+@keyframes appear {
+    0% {
+        width: 0;
+        height: 0;
+        top: 99%;
+        left: 50%;
+        min-width: 0;
+        min-height: 0;
+        opacity: 0;
+    }
+    100% {
+        width: var(--dev-width);
+        height: var(--dev-height);
+        top: var(--dev-top);
+        left: var(--dev-left);
+        opacity: 1;
+    }
+}
+@keyframes hidden {
+    0% {
+        width: var(--dev-width);
+        height: var(--dev-height);
+        top: var(--dev-top);
+        left: var(--dev-left);
+        opacity: 1;
+    }
+    100% {
+        width: 0;
+        height: 0;
+        top: 99%;
+        left: 50%;
+        min-width: 0;
+        min-height: 0;
+        opacity: 0;
+    }
+}
+
+.dev-window-close-btn {
+    position: absolute;
+    top: 6px;
+    right: 5px;
+    font-size: 16px;
+    color: white;
+    z-index: 3;
+    transition: transform 0.2s;
+}
+.dev-window-close-btn:hover {
+    transform: scale(1.3);
+}
+[id^="dev-screen"].dev-window-close {
+    transform-origin: center;
+    animation: closeWin 0.2s linear;
+}
+@keyframes closeWin {
+    to {
+        opacity: 0.4;
+        transform: scale(0.7);
+        backdrop-filter: blur(200px);
+        border: none;
+    }
+}
+.dev-window-resize {
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    border-top-left-radius: 7px;
+    background-image: linear-gradient(
+        to bottom right,
+        white,
+        transparent 50%,
+        rgba(0, 0, 0, 0.2)
+    );
+    z-index: 3;
+    cursor: zoom-in;
+}
+
+/* ============================================================
+   Scrollbar عام
+   ============================================================ */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+}
+
+
+

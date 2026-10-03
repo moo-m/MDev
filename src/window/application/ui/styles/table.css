@@ -1,0 +1,12 @@
+.dev-storage-table {
+  contain: layout paint;
+}
+
+.dev-storage-header > div {
+  user-select: none;
+}
+
+.dev-storage-body {
+  width: 100%;
+
+}

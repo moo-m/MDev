@@ -1,5 +1,5 @@
 export interface DOCKT {
   dockElement: HTMLDivElement;
-  run: () => void;
+  init: () => void;
   appsRender: (app: HTMLDivElement) => void;
 }
